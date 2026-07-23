@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Divipol;
+use App\Models\LeaderResource;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class DivipolPolicy
+class LeaderResourcePolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class DivipolPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_divipol');
+        return $user->can('view_any_leader::resource');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Divipol $divipol): bool
+    public function view(User $user, LeaderResource $leaderResource): bool
     {
-        return $user->can('view_divipol');
+        return $user->can('view_leader::resource');
     }
 
     /**
@@ -31,23 +31,23 @@ class DivipolPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_divipol');
+        return $user->can('create_leader::resource');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Divipol $divipol): bool
+    public function update(User $user, LeaderResource $leaderResource): bool
     {
-        return $user->can('update_divipol');
+        return $user->can('update_leader::resource');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Divipol $divipol): bool
+    public function delete(User $user, LeaderResource $leaderResource): bool
     {
-        return $user->can('delete_divipol');
+        return $user->can('delete_leader::resource');
     }
 
     /**
@@ -55,15 +55,15 @@ class DivipolPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_divipol');
+        return $user->can('delete_any_leader::resource');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Divipol $divipol): bool
+    public function forceDelete(User $user, LeaderResource $leaderResource): bool
     {
-        return $user->can('force_delete_divipol');
+        return $user->can('force_delete_leader::resource');
     }
 
     /**
@@ -71,15 +71,15 @@ class DivipolPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_divipol');
+        return $user->can('force_delete_any_leader::resource');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Divipol $divipol): bool
+    public function restore(User $user, LeaderResource $leaderResource): bool
     {
-        return $user->can('restore_divipol');
+        return $user->can('restore_leader::resource');
     }
 
     /**
@@ -87,15 +87,15 @@ class DivipolPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_divipol');
+        return $user->can('restore_any_leader::resource');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Divipol $divipol): bool
+    public function replicate(User $user, LeaderResource $leaderResource): bool
     {
-        return $user->can('replicate_divipol');
+        return $user->can('replicate_leader::resource');
     }
 
     /**
@@ -103,6 +103,6 @@ class DivipolPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_divipol');
+        return $user->can('reorder_leader::resource');
     }
 }

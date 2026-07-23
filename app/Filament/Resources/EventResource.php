@@ -34,50 +34,153 @@ class EventResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Información de la Reunión')
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->label('Nombre de la Reunión')
-                            ->maxLength(255),
-                        Forms\Components\ColorPicker::make('color')
-                            ->required()
-                            ->label('Color en el Calendario'),
-                        Forms\Components\Textarea::make('description')
-                            ->required()
-                            ->label('Propósito de la Reunión')
-                            ->columnSpanFull(),
-                    ])->columns(2),
+                Forms\Components\Tabs::make('EventLifecycle')
+                    ->tabs([
+                        // TAB 1: General
+                        Forms\Components\Tabs\Tab::make('General')
+                            ->icon('heroicon-o-information-circle')
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->required()
+                                    ->label('Nombre del Evento')
+                                    ->maxLength(255),
+                                Forms\Components\ColorPicker::make('color')
+                                    ->required()
+                                    ->label('Color en Calendario')
+                                    ->default('#3B82F6'),
+                                Forms\Components\DatePicker::make('event_date')
+                                    ->label('Fecha del Evento'),
+                                Forms\Components\DateTimePicker::make('starts_at')
+                                    ->label('Hora de Inicio')
+                                    ->required(),
+                                Forms\Components\DateTimePicker::make('ends_at')
+                                    ->label('Hora de Finalización')
+                                    ->required(),
+                                Forms\Components\TextInput::make('responsible_name')
+                                    ->label('Responsable'),
+                                Forms\Components\Select::make('city_id')
+                                    ->label('Municipio')
+                                    ->relationship('city', 'name')
+                                    ->searchable()
+                                    ->preload(),
+                                Forms\Components\TextInput::make('barrio')
+                                    ->label('Barrio / Lugar'),
+                                Forms\Components\TextInput::make('latitude')
+                                    ->label('Latitud'),
+                                Forms\Components\TextInput::make('longitude')
+                                    ->label('Longitud'),
+                                Forms\Components\Select::make('candidate_id')
+                                    ->label('Candidato Representado')
+                                    ->relationship('candidate', 'name')
+                                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} {$record->lastname}")
+                                    ->searchable()
+                                    ->preload(),
+                                Forms\Components\Select::make('suffragan_id')
+                                    ->label('Líder Asignado')
+                                    ->relationship('leader', 'name', fn (Builder $query) => $query->where('is_leader', true))
+                                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} {$record->lastname}")
+                                    ->searchable()
+                                    ->preload(),
+                                Forms\Components\Textarea::make('description')
+                                    ->label('Descripción / Propósito')
+                                    ->columnSpanFull(),
+                            ])->columns(2),
 
-                Forms\Components\Section::make('Asociación Política')
-                    ->schema([
-                        Forms\Components\Select::make('candidate_id')
-                            ->label('Candidato Representado')
-                            ->relationship('candidate', 'name')
-                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} {$record->lastname}")
-                            ->searchable()
-                            ->preload(),
-                        Forms\Components\Select::make('suffragan_id')
-                            ->label('Líder Responsable')
-                            ->relationship(
-                                'leader', 
-                                'name', 
-                                fn (Builder $query) => $query->where('is_leader', true)
-                            )
-                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} {$record->lastname}")
-                            ->searchable()
-                            ->preload(),
-                    ])->columns(2),
+                        // TAB 2: Planeación
+                        Forms\Components\Tabs\Tab::make('Planeación')
+                            ->icon('heroicon-o-clipboard-document-check')
+                            ->schema([
+                                Forms\Components\Textarea::make('objectives')
+                                    ->label('Objetivos'),
+                                Forms\Components\TextInput::make('budget')
+                                    ->label('Presupuesto ($)')
+                                    ->numeric()
+                                    ->prefix('$'),
+                                Forms\Components\Textarea::make('resources_needed')
+                                    ->label('Recursos Requeridos'),
+                                Forms\Components\Textarea::make('staff_needed')
+                                    ->label('Personal Necesario'),
+                                Forms\Components\Textarea::make('transport_details')
+                                    ->label('Detalles de Transporte'),
+                                Forms\Components\Textarea::make('catering_details')
+                                    ->label('Alimentación / Logística'),
+                                Forms\Components\Textarea::make('logistics_notes')
+                                    ->label('Notas Generales de Logística')
+                                    ->columnSpanFull(),
+                            ])->columns(2),
 
-                Forms\Components\Section::make('Programación')
-                    ->schema([
-                        Forms\Components\DateTimePicker::make('starts_at')
-                            ->label('Fecha y Hora de Inicio')
-                            ->required(),
-                        Forms\Components\DateTimePicker::make('ends_at')
-                            ->label('Fecha y Hora de Finalización')
-                            ->required(),
-                    ])->columns(2),
+                        // TAB 3: Avanzada
+                        Forms\Components\Tabs\Tab::make('Avanzada')
+                            ->icon('heroicon-o-wrench-screwdriver')
+                            ->schema([
+                                Forms\Components\Textarea::make('pre_visits_notes')
+                                    ->label('Visitas Previas'),
+                                Forms\Components\Textarea::make('pre_meetings_notes')
+                                    ->label('Reuniones Previas'),
+                                Forms\Components\TextInput::make('permits_status')
+                                    ->label('Estado de Permisos (Tramitados/Pendientes)'),
+                                Forms\Components\Textarea::make('publicity_notes')
+                                    ->label('Publicidad y Difusión'),
+                                Forms\Components\Textarea::make('sound_system_notes')
+                                    ->label('Sonido / Audiovisuales'),
+                                Forms\Components\Textarea::make('stage_notes')
+                                    ->label('Tarima / Montaje'),
+                                Forms\Components\Textarea::make('security_notes')
+                                    ->label('Seguridad y Protocolo'),
+                                Forms\Components\Textarea::make('guests_list')
+                                    ->label('Lista de Invitados Especiales'),
+                            ])->columns(2),
+
+                        // TAB 4: Durante el Evento
+                        Forms\Components\Tabs\Tab::make('Durante el Evento')
+                            ->icon('heroicon-o-users')
+                            ->schema([
+                                Forms\Components\TextInput::make('expected_attendance')
+                                    ->label('Asistencia Esperada')
+                                    ->numeric(),
+                                Forms\Components\TextInput::make('real_attendance')
+                                    ->label('Asistencia Real')
+                                    ->numeric(),
+                                Forms\Components\FileUpload::make('photos')
+                                    ->label('Fotografías del Evento')
+                                    ->multiple()
+                                    ->image()
+                                    ->disk('public')
+                                    ->directory('events/photos')
+                                    ->columnSpanFull(),
+                                Forms\Components\FileUpload::make('videos')
+                                    ->label('Evidencias en Video / Documentos')
+                                    ->multiple()
+                                    ->disk('public')
+                                    ->directory('events/videos')
+                                    ->columnSpanFull(),
+                                Forms\Components\Textarea::make('during_notes')
+                                    ->label('Observaciones Durante la Jornada')
+                                    ->columnSpanFull(),
+                            ])->columns(2),
+
+                        // TAB 5: Después del Evento
+                        Forms\Components\Tabs\Tab::make('Después del Evento')
+                            ->icon('heroicon-o-chart-bar')
+                            ->schema([
+                                Forms\Components\Textarea::make('result_summary')
+                                    ->label('Resultado General'),
+                                Forms\Components\Textarea::make('political_impact')
+                                    ->label('Impacto Político Evaluado'),
+                                Forms\Components\Textarea::make('commitments_acquired')
+                                    ->label('Compromisos Adquiridos')
+                                    ->columnSpanFull(),
+                                Forms\Components\Textarea::make('followup_notes')
+                                    ->label('Plan de Seguimiento')
+                                    ->columnSpanFull(),
+                                Forms\Components\FileUpload::make('evidences')
+                                    ->label('Evidencias Finales / Firmas / Planillas')
+                                    ->multiple()
+                                    ->disk('public')
+                                    ->directory('events/evidences')
+                                    ->columnSpanFull(),
+                            ])->columns(2),
+                    ])->columnSpanFull()
             ]);
     }
 
@@ -85,7 +188,6 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
-
                 Tables\Columns\TextColumn::make('id')
                     ->label('Enlace')
                     ->url(fn ($record) => url('/attendance/' . $record->id . '?leader=' . auth()->id()))
@@ -93,64 +195,53 @@ class EventResource extends Resource
                     ->openUrlInNewTab(),
 
                 Tables\Columns\ImageColumn::make('qr_code_path')
-                    ->label('')
-                    ->height(80)
-                    ->width(80)
-                    ->url(fn ($record) => url('public/' . $record->qr_code_path)) 
+                    ->label('QR')
+                    ->height(60)
+                    ->width(60)
                     ->disk('public'),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('color')
-                    ->label('Color')
-                    ->formatStateUsing(function (string $state) {
-                        return "<div style='display: flex; align-items: center; gap: 0.5rem;'>
-                                    <span style='display: inline-block; width: 16px; height: 16px; border-radius: 4px; background-color: {$state}; border: 1px solid #ccc;'></span>
-                                    {$state}
-                                </div>";
-                    })
-                    ->html(),
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('event_date')
+                    ->label('Fecha')
+                    ->date()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('city.name')
+                    ->label('Municipio')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('expected_attendance')
+                    ->label('Esperados')
+                    ->numeric(),
+
+                Tables\Columns\TextColumn::make('real_attendance')
+                    ->label('Reales')
+                    ->numeric(),
+
                 Tables\Columns\TextColumn::make('starts_at')
                     ->label('Inicio')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('ends_at')
-                    ->label('Final')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                // Nueva acción para generar PDF
                 Tables\Actions\Action::make('pdf')
                     ->label('PDF')
                     ->icon('heroicon-o-document-arrow-down')
-                    ->action(function (Event $event) {
-                        // Generar PDF
-                        $qrCode = url('/attendance/' . $event->id);
-                        $pdf = Pdf::loadView('events.pdf', [
-                            'event' => $event,
-                            'qrCode' => $event->qr_code_path 
-                                ? public_path('storage/' . $event->qr_code_path)
-                                : $this->generateQRCode($event)
-                        ]);
-                        
+                    ->color('danger')
+                    ->action(function (Event $record) {
+                        $pdf = \App\Services\EventPdfService::generatePdf($record);
                         return response()->streamDownload(
                             fn () => print($pdf->output()),
-                            "evento-{$event->id}.pdf"
+                            "evento-{$record->id}.pdf"
                         );
-                }),
+                    }),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

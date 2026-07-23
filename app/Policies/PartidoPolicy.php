@@ -2,18 +2,20 @@
 
 namespace App\Policies;
 
-use App\Models\Partido;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\Partido;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PartidoPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->can('view_any_partido');
     }
 
     /**
@@ -21,7 +23,7 @@ class PartidoPolicy
      */
     public function view(User $user, Partido $partido): bool
     {
-        return false;
+        return $user->can('view_partido');
     }
 
     /**
@@ -29,7 +31,7 @@ class PartidoPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('create_partido');
     }
 
     /**
@@ -37,7 +39,7 @@ class PartidoPolicy
      */
     public function update(User $user, Partido $partido): bool
     {
-        return false;
+        return $user->can('update_partido');
     }
 
     /**
@@ -45,22 +47,62 @@ class PartidoPolicy
      */
     public function delete(User $user, Partido $partido): bool
     {
-        return false;
+        return $user->can('delete_partido');
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Determine whether the user can bulk delete.
      */
-    public function restore(User $user, Partido $partido): bool
+    public function deleteAny(User $user): bool
     {
-        return false;
+        return $user->can('delete_any_partido');
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * Determine whether the user can permanently delete.
      */
     public function forceDelete(User $user, Partido $partido): bool
     {
-        return false;
+        return $user->can('force_delete_partido');
+    }
+
+    /**
+     * Determine whether the user can permanently bulk delete.
+     */
+    public function forceDeleteAny(User $user): bool
+    {
+        return $user->can('force_delete_any_partido');
+    }
+
+    /**
+     * Determine whether the user can restore.
+     */
+    public function restore(User $user, Partido $partido): bool
+    {
+        return $user->can('restore_partido');
+    }
+
+    /**
+     * Determine whether the user can bulk restore.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->can('restore_any_partido');
+    }
+
+    /**
+     * Determine whether the user can replicate.
+     */
+    public function replicate(User $user, Partido $partido): bool
+    {
+        return $user->can('replicate_partido');
+    }
+
+    /**
+     * Determine whether the user can reorder.
+     */
+    public function reorder(User $user): bool
+    {
+        return $user->can('reorder_partido');
     }
 }

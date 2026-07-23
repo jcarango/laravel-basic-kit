@@ -48,8 +48,45 @@ class Suffragan extends Authenticatable
         'event_id',
         'is_leader',
         'is_witness',
-        'candidate_id'
+        'candidate_id',
+        'consecutivo',
+        'characterization_date',
+        'vereda',
+        'corregimiento',
+        'property_name',
+        'total_area',
+        'available_area',
+        'cadastral_status',
+        'is_project_beneficiary',
+        'project_name',
+        'has_disability',
+        'disability_type',
+        'gender',
+        'livestock_count',
+        'species',
+        'unit_of_measure',
+        'population_groups',
+        'belongs_to_association',
+        'association_name',
+        'knows_lamb_project',
+        'lamb_project_source',
     ];
+
+    protected $casts = [
+        'is_leader' => 'boolean',
+        'is_witness' => 'boolean',
+        'habeas_data_accepted' => 'boolean',
+        'is_project_beneficiary' => 'boolean',
+        'has_disability' => 'boolean',
+        'belongs_to_association' => 'boolean',
+        'knows_lamb_project' => 'boolean',
+        'characterization_date' => 'date',
+        'population_groups' => 'array',
+        'total_area' => 'decimal:2',
+        'available_area' => 'decimal:2',
+        'livestock_count' => 'integer',
+    ];
+
 
     public function divipols(): BelongsToMany
     {
@@ -202,6 +239,20 @@ class Suffragan extends Authenticatable
     {
         return $this->hasOne(Resume::class);
     }
+
+    public function familyMembers(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(FamilyMember::class);
+    }
+
+    public function requirements(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Requirement::class, 'requirement_suffragan')
+            ->withPivot(['status', 'notes'])
+            ->withTimestamps();
+    }
+
+
 
     public function experience(): \Illuminate\Database\Eloquent\Relations\HasMany
     {

@@ -144,12 +144,29 @@ class CandidateResource extends Resource
                                     ->relationship('partido', 'name')
                                     ->searchable()
                                     ->preload()
-                                    ->hiddenLabel()
                                     ->required()
                                     ->placeholder('Selecciona Partido'),
-                                Forms\Components\Toggle::make('is_visible')
-                                    ->label('¿Activo?')
-                                    ->required(),
+                                Forms\Components\Select::make('cargo_aspira')
+                                    ->label('Cargo al que aspira')
+                                    ->options([
+                                        'Alcaldía' => 'Alcaldía',
+                                        'Concejo' => 'Concejo',
+                                        'Asamblea' => 'Asamblea',
+                                        'Gobernación' => 'Gobernación',
+                                        'Cámara' => 'Cámara',
+                                        'Senado' => 'Senado',
+                                    ])
+                                    ->required()
+                                    ->placeholder('Selecciona Cargo'),
+                                Forms\Components\Toggle::make('is_active')
+                                    ->label('Activo')
+                                    ->default(true),
+                                Forms\Components\Toggle::make('is_principal')
+                                    ->label('Principal')
+                                    ->default(false),
+                                Forms\Components\Toggle::make('is_opponent')
+                                    ->label('Opositor (Sí/No)')
+                                    ->default(false),
                             ])
                 ]);
     }
@@ -158,65 +175,62 @@ class CandidateResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\IconColumn::make('is_visible')
-                    ->label('')
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Activo')
                     ->boolean(),
+                Tables\Columns\IconColumn::make('is_opponent')
+                    ->label('Opositor')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-exclamation-triangle')
+                    ->falseIcon('heroicon-o-check-circle')
+                    ->trueColor('danger')
+                    ->falseColor('success'),
                 Tables\Columns\ImageColumn::make('photo')
-                    ->label('')
+                    ->label('Foto')
                     ->circular()
                     ->height(50)
                     ->width(50)
-                    ->url(fn ($record) => url('public/' . $record->image))
                     ->disk('public'),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('lastname')
                     ->label('Apellido')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->label('Correo')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('cargo_aspira')
+                    ->label('Cargo')
+                    ->badge()
+                    ->color('info')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('partido.name')
+                    ->label('Partido')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Celular')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('web')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('country.name')
-                    ->numeric()
-                    ->label('País')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('state.name')
-                    ->numeric()
-                    ->label('Departamento')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('city.name')
-                    ->numeric()
                     ->label('Ciudad')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('address')
-                    ->label('Dirección')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('campains.name')
-                    ->numeric()
-                    ->label('Campaña')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('partidos.name')
-                    ->label('Partidos')
-                    ->limit(30)
-                    ->sortable()
-                    ->wrap(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('is_opponent')
+                    ->label('Ver Opositores'),
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label('Ver Activos'),
+                Tables\Filters\SelectFilter::make('cargo_aspira')
+                    ->label('Cargo Aspirado')
+                    ->options([
+                        'Alcaldía' => 'Alcaldía',
+                        'Concejo' => 'Concejo',
+                        'Asamblea' => 'Asamblea',
+                        'Gobernación' => 'Gobernación',
+                        'Cámara' => 'Cámara',
+                        'Senado' => 'Senado',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

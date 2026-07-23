@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Divipol;
+use App\Models\Requirement;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class DivipolPolicy
+class RequirementPolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class DivipolPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_divipol');
+        return $user->can('view_any_requirement');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Divipol $divipol): bool
+    public function view(User $user, Requirement $requirement): bool
     {
-        return $user->can('view_divipol');
+        return $user->can('view_requirement');
     }
 
     /**
@@ -31,23 +31,23 @@ class DivipolPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_divipol');
+        return $user->can('create_requirement');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Divipol $divipol): bool
+    public function update(User $user, Requirement $requirement): bool
     {
-        return $user->can('update_divipol');
+        return $user->can('update_requirement');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Divipol $divipol): bool
+    public function delete(User $user, Requirement $requirement): bool
     {
-        return $user->can('delete_divipol');
+        return $user->can('delete_requirement');
     }
 
     /**
@@ -55,15 +55,15 @@ class DivipolPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_divipol');
+        return $user->can('delete_any_requirement');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Divipol $divipol): bool
+    public function forceDelete(User $user, Requirement $requirement): bool
     {
-        return $user->can('force_delete_divipol');
+        return $user->can('force_delete_requirement');
     }
 
     /**
@@ -71,15 +71,15 @@ class DivipolPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_divipol');
+        return $user->can('force_delete_any_requirement');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Divipol $divipol): bool
+    public function restore(User $user, Requirement $requirement): bool
     {
-        return $user->can('restore_divipol');
+        return $user->can('restore_requirement');
     }
 
     /**
@@ -87,15 +87,15 @@ class DivipolPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_divipol');
+        return $user->can('restore_any_requirement');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Divipol $divipol): bool
+    public function replicate(User $user, Requirement $requirement): bool
     {
-        return $user->can('replicate_divipol');
+        return $user->can('replicate_requirement');
     }
 
     /**
@@ -103,6 +103,6 @@ class DivipolPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_divipol');
+        return $user->can('reorder_requirement');
     }
 }

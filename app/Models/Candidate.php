@@ -23,7 +23,29 @@ class Candidate extends Model
         'photo',
         'is_visible',
         'partido_id',
+        'cargo_aspira',
+        'is_active',
+        'is_principal',
+        'is_opponent',
     ];
+
+    protected $casts = [
+        'is_visible' => 'boolean',
+        'is_active' => 'boolean',
+        'is_principal' => 'boolean',
+        'is_opponent' => 'boolean',
+    ];
+
+    public function scopeOpponents($query)
+    {
+        return $query->where('is_opponent', true);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
 
     public function partido(): BelongsTo
     {

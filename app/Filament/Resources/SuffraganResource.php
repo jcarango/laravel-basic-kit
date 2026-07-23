@@ -205,12 +205,56 @@ class SuffraganResource extends Resource
                                     ->relationship('candidate', 'name')
                                     ->searchable()
                                     ->preload()
+                                    ->live()
                                     ->label('Candidato Principal'),
                                 Forms\Components\TextInput::make('votodepartamento')->label('Depto. Votación')->disabled(),
                                 Forms\Components\TextInput::make('votomunicipio')->label('Mpio. Votación')->disabled(),
                                 Forms\Components\TextInput::make('votopuesto')->label('Puesto Votación')->disabled(),
+                                Forms\Components\Placeholder::make('candidate_preview')
+                                    ->label('Visualización de Candidato y Partido')
+                                    ->content(function (Get $get) {
+                                        $candidateId = $get('candidate_id');
+                                        if (!$candidateId) {
+                                            return 'Ningún candidato seleccionado';
+                                        }
+                                        $candidate = \App\Models\Candidate::with('partido')->find($candidateId);
+                                        if (!$candidate) return 'Candidato no encontrado';
+
+                                        $photoUrl = $candidate->photo ? url('storage/' . $candidate->photo) : null;
+                                        $logoUrl = $candidate->partido?->logo ? url('storage/' . $candidate->partido->logo) : null;
+
+                                        $photoImg = $photoUrl ? "<img src='{$photoUrl}' style='width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid #6366f1;' />" : "";
+                                        $logoImg = $logoUrl ? "<img src='{$logoUrl}' style='width:60px; height:60px; object-fit:contain;' />" : "";
+
+                                        return new \Illuminate\Support\HtmlString("
+                                            <div style='display:flex; align-items:center; gap:1rem; padding:12px; background:#f1f5f9; border-radius:8px;'>
+                                                {$photoImg}
+                                                <div>
+                                                    <strong style='font-size:15px; display:block;'>{$candidate->name} {$candidate->lastname}</strong>
+                                                    <span style='font-size:12px; color:#475569;'>Cargo: " . ($candidate->cargo_aspira ?? 'Candidato') . "</span><br>
+                                                    <span style='font-size:12px; color:#4f46e5; font-weight:bold;'>Partido: " . ($candidate->partido?->name ?? 'N/A') . "</span>
+                                                </div>
+                                                <div style='margin-left:auto;'>
+                                                    {$logoImg}
+                                                </div>
+                                            </div>
+                                        ");
+                                    })
+                                    ->columnSpanFull(),
+                            ]),
+                        Section::make('Ubicación Geográfica en Mapa')
+                            ->columns(2)
+                            ->schema([
+                                \Dotswan\MapPicker\Fields\Map::make('location')
+                                    ->label('Mapa Interactivo (Mover Marcador)')
+                                    ->defaultLocation([4.5709, -74.2973])
+                                    ->clickable(true)
+                                    ->draggable(true)
+                                    ->zoom(12)
+                                    ->columnSpanFull(),
                             ]),
                     ]),
+
                     
                 // WIZARD STEP 2: Experiencia
                 Forms\Components\Wizard\Step::make('Experiencia Laboral')
@@ -286,6 +330,83 @@ class SuffraganResource extends Resource
                                 Forms\Components\Select::make('role')->options(['Miembro' => 'Miembro', 'Coordinador' => 'Coordinador', 'Enlace' => 'Enlace'])->required()->label('Rol Proyectado')
                             ])->columns(2)->defaultItems(0)
                     ]),
+
+                // WIZARD STEP 5: Caracterización Social & Productiva
+                Forms\Components\Wizard\Step::make('Caracterización Social')
+                    ->icon('heroicon-o-home-modern')
+                    ->schema([
+                        Section::make('Información General de Caracterización')
+                            ->columns(4)
+                            ->schema([
+                                Forms\Components\TextInput::make('consecutivo')->label('Consecutivo'),
+                                Forms\Components\DatePicker::make('characterization_date')->label('Fecha Caracterización'),
+                                Forms\Components\TextInput::make('vereda')->label('Vereda'),
+                                Forms\Components\TextInput::make('corregimiento')->label('Corregimiento'),
+                            ]),
+
+                        Section::make('Información del Predio')
+                            ->columns(4)
+                            ->schema([
+                                Forms\Components\TextInput::make('property_name')->label('Nombre del Predio'),
+                                Forms\Components\TextInput::make('total_area')->numeric()->label('Área Total (ha)'),
+                                Forms\Components\TextInput::make('available_area')->numeric()->label('Área Disponible (ha)'),
+                                Forms\Components\Select::make('cadastral_status')
+                                    ->label('Estado Catastral')
+                                    ->options([
+                                        'Escritura pública' => 'Escritura pública',
+                                        'Compraventa' => 'Compraventa',
+                                        'Sucesión' => 'Sucesión',
+                                        'Otro' => 'Otro',
+                                    ]),
+                            ]),
+
+                        Section::make('Proyectos y Condición Social')
+                            ->columns(3)
+                            ->schema([
+                                Forms\Components\Select::make('gender')
+                                    ->label('Sexo')
+                                    ->options(['Masculino' => 'Masculino', 'Femenino' => 'Femenino', 'Otro' => 'Otro']),
+                                Forms\Components\Toggle::make('is_project_beneficiary')->label('¿Beneficiario de proyectos?')->live(),
+                                Forms\Components\TextInput::make('project_name')->label('Nombre del Proyecto')->hidden(fn (Get $get) => !$get('is_project_beneficiary')),
+                                Forms\Components\Toggle::make('has_disability')->label('¿Condición de Discapacidad?')->live(),
+                                Forms\Components\TextInput::make('disability_type')->label('Tipo de Discapacidad')->hidden(fn (Get $get) => !$get('has_disability')),
+                            ]),
+
+                        Section::make('Línea Productiva')
+                            ->columns(3)
+                            ->schema([
+                                Forms\Components\TextInput::make('livestock_count')->numeric()->label('Número de Animales'),
+                                Forms\Components\TextInput::make('species')->label('Especies'),
+                                Forms\Components\TextInput::make('unit_of_measure')->label('Unidad de Medida'),
+                            ]),
+
+                        Section::make('Grupos Poblacionales')
+                            ->schema([
+                                Forms\Components\CheckboxList::make('population_groups')
+                                    ->label('Seleccionar Grupos Poblacionales')
+                                    ->options([
+                                        'Mujer Rural' => 'Mujer Rural',
+                                        'PDET' => 'PDET',
+                                        'PNIS' => 'PNIS',
+                                        'Víctima del conflicto' => 'Víctima del conflicto',
+                                        'Grupo étnico' => 'Grupo étnico',
+                                        'SISBEN' => 'SISBEN',
+                                        'Beneficiario de programas' => 'Beneficiario de programas',
+                                        'Asociación' => 'Asociación',
+                                    ])
+                                    ->columns(4),
+                            ]),
+
+                        Section::make('Asociaciones & Proyecto Corderos')
+                            ->columns(2)
+                            ->schema([
+                                Forms\Components\Toggle::make('belongs_to_association')->label('¿Pertenece a alguna asociación?')->live(),
+                                Forms\Components\TextInput::make('association_name')->label('Nombre de la Asociación')->hidden(fn (Get $get) => !$get('belongs_to_association')),
+                                Forms\Components\Toggle::make('knows_lamb_project')->label('¿Conoce el Proyecto de Corderos?')->live(),
+                                Forms\Components\TextInput::make('lamb_project_source')->label('¿Cómo se enteró?')->hidden(fn (Get $get) => !$get('knows_lamb_project')),
+                            ]),
+                    ]),
+
 
                 // WIZARD STEP 5: Documentos Privacidad
                 Forms\Components\Wizard\Step::make('Privacidad')
@@ -571,8 +692,11 @@ class SuffraganResource extends Resource
     {
         return [
             RelationManagers\LeaderResourcesRelationManager::class,
+            RelationManagers\FamilyMembersRelationManager::class,
+            RelationManagers\RequirementsRelationManager::class,
         ];
     }
+
 
     public static function getPages(): array
     {
