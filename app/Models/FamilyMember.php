@@ -15,6 +15,7 @@ class FamilyMember extends Model
         'name',
         'document_number',
         'relationship',
+        'birth_date',
         'age',
         'gender',
         'phone',
@@ -22,6 +23,21 @@ class FamilyMember extends Model
         'education_level',
         'notes',
     ];
+
+    protected $casts = [
+        'birth_date' => 'date',
+        'age' => 'integer',
+    ];
+
+    protected static function booted()
+    {
+        static::saving(function ($familyMember) {
+            if ($familyMember->birth_date) {
+                $familyMember->age = \Carbon\Carbon::parse($familyMember->birth_date)->age;
+            }
+        });
+    }
+
 
     public function suffragan(): BelongsTo
     {

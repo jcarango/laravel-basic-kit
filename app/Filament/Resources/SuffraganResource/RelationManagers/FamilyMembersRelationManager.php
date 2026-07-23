@@ -37,9 +37,19 @@ class FamilyMembersRelationManager extends RelationManager
                         'Otro' => 'Otro',
                     ])
                     ->required(),
+                Forms\Components\DatePicker::make('birth_date')
+                    ->label('Fecha de Nacimiento')
+                    ->live()
+                    ->afterStateUpdated(function ($state, Forms\Set $set) {
+                        if ($state) {
+                            $set('age', \Carbon\Carbon::parse($state)->age);
+                        }
+                    }),
                 Forms\Components\TextInput::make('age')
-                    ->label('Edad')
-                    ->numeric(),
+                    ->label('Edad (Años)')
+                    ->numeric()
+                    ->readOnly()
+                    ->helperText('Calculado automáticamente según la fecha de nacimiento'),
                 Forms\Components\Select::make('gender')
                     ->label('Sexo')
                     ->options([
@@ -76,13 +86,19 @@ class FamilyMembersRelationManager extends RelationManager
                     ->color('info'),
                 Tables\Columns\TextColumn::make('document_number')
                     ->label('Documento'),
+                Tables\Columns\TextColumn::make('birth_date')
+                    ->label('F. Nacimiento')
+                    ->date(),
                 Tables\Columns\TextColumn::make('age')
-                    ->label('Edad'),
+                    ->label('Edad (Años)')
+                    ->badge()
+                    ->color('success'),
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Celular'),
                 Tables\Columns\TextColumn::make('occupation')
                     ->label('Ocupación'),
             ])
+
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
             ])
