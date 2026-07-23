@@ -374,11 +374,11 @@ class SuffraganResource extends Resource
                             ]),
 
                         Section::make('Línea Productiva')
-                            ->columns(3)
                             ->schema([
-                                Forms\Components\TextInput::make('livestock_count')->numeric()->label('Número de Animales'),
-                                Forms\Components\TextInput::make('species')->label('Especies'),
-                                Forms\Components\TextInput::make('unit_of_measure')->label('Unidad de Medida'),
+                                Forms\Components\TextInput::make('species')
+                                    ->label('Línea Productiva')
+                                    ->placeholder('Ej: Ganadería, Avicultura, Porcicultura, Cultivo de café, etc.')
+                                    ->columnSpanFull(),
                             ]),
 
                         Section::make('Grupos Poblacionales')
@@ -398,15 +398,14 @@ class SuffraganResource extends Resource
                                     ->columns(4),
                             ]),
 
-                        Section::make('Asociaciones & Proyecto Corderos')
+                        Section::make('Asociaciones')
                             ->columns(2)
                             ->schema([
                                 Forms\Components\Toggle::make('belongs_to_association')->label('¿Pertenece a alguna asociación?')->live(),
                                 Forms\Components\TextInput::make('association_name')->label('Nombre de la Asociación')->hidden(fn (Get $get) => !$get('belongs_to_association')),
-                                Forms\Components\Toggle::make('knows_lamb_project')->label('¿Conoce el Proyecto de Corderos?')->live(),
-                                Forms\Components\TextInput::make('lamb_project_source')->label('¿Cómo se enteró?')->hidden(fn (Get $get) => !$get('knows_lamb_project')),
                             ]),
                     ]),
+
 
 
                 // WIZARD STEP 5: Documentos Privacidad
