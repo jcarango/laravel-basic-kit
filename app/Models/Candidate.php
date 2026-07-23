@@ -78,10 +78,16 @@ class Candidate extends Model
         return $this->hasMany(Suffragan::class)->where('is_leader', true);
     }
 
+    public function suffragans()
+    {
+        return $this->hasMany(Suffragan::class);
+    }
+
     public function events()
     {
         return $this->hasMany(Event::class);
     }
+
 
     public function getFullNameAttribute()
     {
