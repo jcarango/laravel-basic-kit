@@ -34,6 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('DEMOSOL')
             ->profile()
             ->sidebarCollapsibleOnDesktop()
+
             ->colors([
                 'danger' => Color::Red,
                 'gray' => Color::Slate,
