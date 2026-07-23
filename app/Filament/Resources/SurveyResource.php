@@ -100,9 +100,48 @@ class SurveyResource extends Resource
                     ->label('Activas'),
             ])
             ->actions([
+                Tables\Actions\Action::make('fill_survey')
+                    ->label('Responder Encuesta')
+                    ->icon('heroicon-o-pencil-square')
+                    ->color('success')
+                    ->url(fn (Survey $record) => route('survey.form', ['survey' => $record]))
+                    ->openUrlInNewTab(),
+                Tables\Actions\Action::make('view_responses')
+                    ->label('Ver Resultados')
+                    ->icon('heroicon-o-chart-pie')
+                    ->color('info')
+                    ->modalHeading(fn (Survey $record) => "Resultados de Encuesta: {$record->title}")
+                    ->modalContent(function (Survey $record) {
+                        $responsesCount = $record->responses()->count();
+                        $questions = $record->questions()->with('answers')->get();
+
+                        $questionsHtml = '';
+                        foreach ($questions as $q) {
+                            $answers = \App\Models\SurveyAnswer::where('survey_question_id', $q->id)->pluck('answer_value');
+                            $answersList = $answers->take(5)->map(fn ($a) => "<li style='font-size:12px; color:#475569;'>{$a}</li>")->implode('');
+                            
+                            $questionsHtml .= "
+                                <div style='margin-bottom:15px; padding:10px; background:#f8fafc; border-radius:6px; border:1px solid #e2e8f0;'>
+                                    <strong style='font-size:13px; color:#1e293b;'>Pregunta: {$q->question_text}</strong> <span style='font-size:10px; background:#e2e8f0; padding:2px 6px; border-radius:4px;'>{$q->type}</span>
+                                    <p style='font-size:11px; color:#64748b; margin:4px 0;'>Total Respuestas: " . $answers->count() . "</p>
+                                    <ul style='margin:0; padding-left:15px;'>{$answersList}</ul>
+                                </div>
+                            ";
+                        }
+
+                        return new \Illuminate\Support\HtmlString("
+                            <div>
+                                <p style='font-size:14px; font-weight:bold; margin-bottom:10px;'>Total Encuestas Respondidas: <span style='color:#2563eb;'>{$responsesCount}</span></p>
+                                {$questionsHtml}
+                            </div>
+                        ");
+                    })
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Cerrar'),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

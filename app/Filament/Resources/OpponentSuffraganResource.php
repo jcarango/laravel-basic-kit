@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\OpponentSuffraganResource\Pages;
 use App\Models\Suffragan;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+
 
 class OpponentSuffraganResource extends SuffraganResource
 {
@@ -30,4 +32,12 @@ class OpponentSuffraganResource extends SuffraganResource
                 $query->where('is_opponent', true);
             });
     }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListOpponentSuffragans::route('/'),
+        ];
+    }
 }
+

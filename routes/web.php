@@ -21,3 +21,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // Google Auth Routes
 Route::get('/auth/google/redirect', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'callback'])->name('google.callback');
+
+// Encuestas Públicas
+Route::get('/encuesta/{survey}', \App\Livewire\SurveyForm::class)->name('survey.form');
+
