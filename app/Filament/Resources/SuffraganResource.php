@@ -247,11 +247,12 @@ class SuffraganResource extends Resource
                             ->schema([
                                 \Dotswan\MapPicker\Fields\Map::make('location')
                                     ->label('Mapa Interactivo (Mover Marcador)')
-                                    ->defaultLocation([4.5709, -74.2973])
+                                    ->defaultLocation(4.5709, -74.2973)
                                     ->clickable(true)
                                     ->draggable(true)
                                     ->zoom(12)
                                     ->columnSpanFull(),
+
                             ]),
                     ]),
 
