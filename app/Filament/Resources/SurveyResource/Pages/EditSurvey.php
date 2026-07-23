@@ -10,10 +10,16 @@ class EditSurvey extends EditRecord
 {
     protected static string $resource = SurveyResource::class;
 
+    public function hasCombinedRelationManagerTabsWithContent(): bool
+    {
+        return true;
+    }
+
     protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),
         ];
     }
+
 }

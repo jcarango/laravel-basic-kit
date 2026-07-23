@@ -107,6 +107,11 @@ class SurveyResource extends Resource
                     ->color('success')
                     ->url(fn (Survey $record) => route('survey.form', ['survey' => $record]))
                     ->openUrlInNewTab(),
+                Tables\Actions\Action::make('list_respondents')
+                    ->label('Encuestados & Convertir')
+                    ->icon('heroicon-o-users')
+                    ->color('warning')
+                    ->url(fn (Survey $record) => static::getUrl('edit', ['record' => $record]) . '?activeRelationManager=1'),
                 Tables\Actions\Action::make('view_responses')
                     ->label('Ver Resultados')
                     ->icon('heroicon-o-chart-pie')
@@ -139,9 +144,11 @@ class SurveyResource extends Resource
                     })
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Cerrar'),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('Editar'),
                 Tables\Actions\DeleteAction::make(),
             ])
+
 
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
