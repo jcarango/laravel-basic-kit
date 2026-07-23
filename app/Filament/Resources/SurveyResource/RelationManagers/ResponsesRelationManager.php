@@ -102,9 +102,10 @@ class ResponsesRelationManager extends RelationManager
                                 'lastname' => '',
                                 'documentationtype' => 'cedula',
                                 'documentationnumber' => !empty($docNumber) ? $docNumber : 'ENC-' . time() . rand(10, 99),
-                                'phone' => $record->phone,
-                                'email' => $record->email,
-                                'address' => $record->address,
+                                'phone' => $record->phone ?? '',
+                                'email' => $record->email ?? '',
+                                'address' => $record->address ?? '',
+
                                 'city_id' => $record->city_id ?? $record->survey?->city_id,
                                 'latitude' => $record->latitude,
                                 'longitude' => $record->longitude,
