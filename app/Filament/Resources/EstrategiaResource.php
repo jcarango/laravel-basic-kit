@@ -32,9 +32,11 @@ class EstrategiaResource extends Resource
     protected static ?string $model = Estrategia::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-hand-thumb-up';
-    protected static ?int $navigationSort = 15;
-    protected static ?string $navigationGroup = 'Control Electoral';
-    protected static ?string $label = 'Estrategia';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Ejecución Campaña';
+    protected static ?string $label = 'Estrategias';
+    protected static ?string $pluralLabel = 'Estrategias';
+
 
     public static function getNavigationBadge(): ?string
     {

@@ -11,9 +11,10 @@ use Filament\Actions\Action;
 class ReportsPage extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
-    protected static ?int $navigationSort = 17;
-    protected static ?string $navigationGroup = 'Control Electoral';
+    protected static ?int $navigationSort = 11;
+    protected static ?string $navigationGroup = 'Admin';
     protected static ?string $title = 'Centro de Reportes y Exportación';
+
 
     protected static string $view = 'filament.pages.reports-page';
 

@@ -18,8 +18,10 @@ class CityResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static ?string $navigationGroup = 'Admin';
-    protected static ?int $navigationSort = 62;
-    protected static ?string $label = 'Ciudade';
+    protected static ?int $navigationSort = 4;
+    protected static ?string $label = 'Ciudad';
+    protected static ?string $pluralLabel = 'Ciudades';
+
 
     public static function getNavigationBadge(): ?string
     {

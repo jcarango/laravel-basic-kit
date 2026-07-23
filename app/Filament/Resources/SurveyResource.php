@@ -16,10 +16,11 @@ class SurveyResource extends Resource
     protected static ?string $model = Survey::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar-square';
-    protected static ?int $navigationSort = 16;
-    protected static ?string $navigationGroup = 'Control Electoral';
-    protected static ?string $label = 'Encuesta';
-    protected static ?string $pluralLabel = 'Sistema de Encuestas';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Ejecución Campaña';
+    protected static ?string $label = 'Sistema De Encuestas';
+    protected static ?string $pluralLabel = 'Sistema De Encuestas';
+
 
     public static function form(Form $form): Form
     {

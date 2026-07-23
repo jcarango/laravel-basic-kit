@@ -19,8 +19,10 @@ class SkillResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $label = 'Habilidades';
+    protected static ?string $pluralLabel = 'Habilidades';
     protected static ?string $navigationGroup = 'Admin';
-    protected static ?int $navigationSort = 92;
+    protected static ?int $navigationSort = 10;
+
 
     public static function form(Form $form): Form
     {

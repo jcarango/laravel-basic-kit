@@ -29,9 +29,10 @@ class CampainResource extends Resource
     protected static ?string $model = Campain::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-paper-airplane';
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 1;
     protected static ?string $navigationGroup = 'Control Electoral';
     protected static ?string $label = 'Campaña';
+
 
     public static function getNavigationBadge(): ?string
     {

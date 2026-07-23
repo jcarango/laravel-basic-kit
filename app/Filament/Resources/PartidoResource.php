@@ -26,9 +26,11 @@ class PartidoResource extends Resource
     protected static ?string $model = Partido::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-window';
-    protected static ?int $navigationSort = 81;
+    protected static ?int $navigationSort = 8;
     protected static ?string $navigationGroup = 'Admin';
-    protected static ?string $label = 'partidos';
+    protected static ?string $label = 'Partido';
+    protected static ?string $pluralLabel = 'Partidos';
+
 
     public static function getNavigationBadge(): ?string
     {

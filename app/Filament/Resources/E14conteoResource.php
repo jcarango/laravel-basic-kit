@@ -33,9 +33,11 @@ class E14conteoResource extends Resource
     protected static ?string $model = E14conteo::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-check';
-    protected static ?int $navigationSort = 15;
-    protected static ?string $navigationGroup = 'Control Electoral';
-    protected static ?string $label = 'E14 - Conteo';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = 'Ejecución Campaña';
+    protected static ?string $label = 'E14 - Conteos';
+    protected static ?string $pluralLabel = 'E14 - Conteos';
+
 
     public static function getNavigationBadge(): ?string
     {

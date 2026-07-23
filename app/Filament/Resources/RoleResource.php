@@ -16,8 +16,10 @@ class RoleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
     protected static ?string $navigationGroup = 'Admin';
-    protected static ?int $navigationSort = 71;
+    protected static ?int $navigationSort = 6;
     protected static ?string $label = 'Roles';
+    protected static ?string $pluralLabel = 'Roles';
+
 
     public static function getNavigationBadge(): ?string
     {

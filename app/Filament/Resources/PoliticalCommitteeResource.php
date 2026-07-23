@@ -19,8 +19,10 @@ class PoliticalCommitteeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $label = 'Comites Politicos';
+    protected static ?string $pluralLabel = 'Comites Politicos';
     protected static ?string $navigationGroup = 'Admin';
-    protected static ?int $navigationSort = 91;
+    protected static ?int $navigationSort = 9;
+
 
     public static function form(Form $form): Form
     {

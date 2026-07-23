@@ -20,10 +20,11 @@ class LeaderResourceResource extends Resource
     protected static ?string $model = LeaderResource::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-gift';
-    protected static ?int $navigationSort = 14;
-    protected static ?string $navigationGroup = 'Control Electoral';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Eventos de Campaña';
     protected static ?string $modelLabel = 'Recurso de Líder';
-    protected static ?string $pluralModelLabel = 'Recursos de Líderes';
+    protected static ?string $pluralModelLabel = 'Recursos De Líderes';
+
 
     public static function form(Form $form): Form
     {

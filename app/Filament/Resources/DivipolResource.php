@@ -26,9 +26,11 @@ class DivipolResource extends Resource
     protected static ?string $model = Divipol::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-window';
-    protected static ?int $navigationSort = 80;
+    protected static ?int $navigationSort = 7;
     protected static ?string $navigationGroup = 'Admin';
-    protected static ?string $label = 'División Política';
+    protected static ?string $label = 'División Políticas';
+    protected static ?string $pluralLabel = 'División Políticas';
+
 
     public static function getNavigationBadge(): ?string
     {

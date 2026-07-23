@@ -13,10 +13,11 @@ class StrategicMap extends Page
         return auth()->user()->hasPermissionTo('sufragantes.ver');
     }
 
-    protected static ?int $navigationSort = 31;
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'heroicon-s-map';
     protected static ?string $navigationLabel = 'Mapa Estratégico';
-    protected static ?string $navigationGroup = 'Control Electoral';
+    protected static ?string $navigationGroup = 'Mapas';
+
     protected static string $view = 'filament.pages.strategic-map';
 
 

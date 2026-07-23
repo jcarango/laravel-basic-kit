@@ -34,9 +34,10 @@ class CandidateResource extends Resource
     protected static ?string $model = Candidate::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-user-circle';
-    protected static ?int $navigationSort = 11;
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationGroup = 'Control Electoral';
     protected static ?string $label = 'Candidato';
+
 
     public static function getNavigationBadge(): ?string
     {

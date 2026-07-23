@@ -14,11 +14,12 @@ class MapSuffragans extends Page
         return auth()->user()->hasPermissionTo('sufragantes.ver');
     }
 
-    protected static ?int $navigationSort = 30;
+    protected static ?int $navigationSort = 1;
     protected static ?string $navigationIcon = 'heroicon-s-map';
     protected static ?string $navigationLabel = 'Mapa de Sufragantes';
-    protected static ?string $navigationGroup = 'Control Electoral';
+    protected static ?string $navigationGroup = 'Mapas';
     protected static ?string $label = 'Mapa de Sufragantes';
+
 
     protected static string $view = 'filament.pages.map-suffragans';
 

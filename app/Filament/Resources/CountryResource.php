@@ -16,8 +16,10 @@ class CountryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
     protected static ?string $navigationGroup = 'Admin';
-    protected static ?int $navigationSort = 60;
-    protected static ?string $label = 'Paíse';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $label = 'País';
+    protected static ?string $pluralLabel = 'Países';
+
 
     public static function getNavigationBadge(): ?string
     {

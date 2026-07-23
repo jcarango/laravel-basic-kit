@@ -26,9 +26,10 @@ class ObservationResource extends Resource
     protected static ?string $model = Observation::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-eye';
-    protected static ?int $navigationSort = 14;
-    protected static ?string $navigationGroup = 'Control Electoral';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Eventos de Campaña';
     protected static ?string $label = 'Observaciones';
+
 
     public static function getNavigationBadge(): ?string
     {

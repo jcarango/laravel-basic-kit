@@ -32,9 +32,10 @@ class SuffraganResource extends Resource
     protected static ?string $model = Suffragan::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-identification';
-    protected static ?int $navigationSort = 13;
+    protected static ?int $navigationSort = 3;
     protected static ?string $navigationGroup = 'Control Electoral';
     protected static ?string $label = 'Sufragantes';
+
 
     // Hacer que la barra de búsqueda principal consulte la experiencia, educación, perfil y nombre
     protected static ?array $searchableAttributes = [

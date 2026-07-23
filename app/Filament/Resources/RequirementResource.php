@@ -15,10 +15,11 @@ class RequirementResource extends Resource
     protected static ?string $model = Requirement::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
-    protected static ?int $navigationSort = 15;
-    protected static ?string $navigationGroup = 'Control Electoral';
-    protected static ?string $label = 'Requerimiento';
-    protected static ?string $pluralLabel = 'Catálogo de Requerimientos';
+    protected static ?int $navigationSort = 12;
+    protected static ?string $navigationGroup = 'Admin';
+    protected static ?string $label = 'Catálogo De Requerimientos';
+    protected static ?string $pluralLabel = 'Catálogo De Requerimientos';
+
 
     public static function form(Form $form): Form
     {
