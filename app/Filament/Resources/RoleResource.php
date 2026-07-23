@@ -5,54 +5,60 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\RoleResource\Pages;
 use Filament\Forms;
 use Filament\Tables;
-use Spatie\Permission\Models\Role;
 use Filament\Resources\Resource;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\CheckboxList;
-use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 
 class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
     protected static ?string $navigationGroup = 'Admin';
-    protected static ?int $navigationSort = 5;
-    protected static ?string $label = 'Role';
+    protected static ?int $navigationSort = 71;
+    protected static ?string $label = 'Roles';
 
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
 
-    public static function form(Forms\Form $form): Forms\Form
+    public static function form(Form $form): Form
     {
         return $form->schema([
-            TextInput::make('name')->required(),
-            CheckboxList::make('permissions')
+            Forms\Components\TextInput::make('name')
+                ->label('Nombre del Rol')
+                ->required(),
+
+            Forms\Components\Select::make('permissions')
                 ->label('Permisos')
                 ->relationship('permissions', 'name')
-                ->columns(2)
+                ->multiple()
+                ->preload()
                 ->searchable(),
         ]);
     }
 
-    public static function table(Tables\Table $table): Tables\Table
+    public static function table(Table $table): Table
     {
-        return $table->columns([
-            Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-            Tables\Columns\TextColumn::make('permissions.name')
-                ->label('Permisos')
-                ->badge()
-                ->limit(3),
-        ]);
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('name')->label('Rol'),
+                Tables\Columns\TextColumn::make('permissions.name')->label('Permisos')->badge(),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ]);
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListRoles::route('/'),
-            'create' => Pages\CreateRole::route('/create'),
-            'edit' => Pages\EditRole::route('/{record}/edit'),
+            'create' => Pages\CreateRole::route('/crear'),
+            'edit' => Pages\EditRole::route('/{record}/editar'),
         ];
     }
 }

@@ -2,24 +2,19 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, LogsActivity;
+    use HasFactory, Notifiable, HasRoles, LogsActivity {
+        HasRoles::hasPermissionTo as traitHasPermissionTo;
+    }
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'lastname',
@@ -32,29 +27,24 @@ class User extends Authenticatable
         'email',
         'password',
         'is_active',
+        'monthly_goal',
+        'habeas_data_accepted'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+    protected string $guard_name = 'web';
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected $casts = [
         'is_active' => 'boolean',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
+    // Avatar para Filament
     public function getFilamentAvatarUrl(): ?string
     {
         return $this->avatar 
@@ -62,6 +52,7 @@ class User extends Authenticatable
             : null;
     }
 
+    // Relaciones geográficas
     public function country()
     {
         return $this->belongsTo(Country::class);
@@ -77,20 +68,46 @@ class User extends Authenticatable
         return $this->belongsTo(City::class);
     }
 
+    public function suffragans()
+    {
+        return $this->hasMany(Suffragan::class);
+    }
+
+    public function resume()
+    {
+        return $this->hasOne(Resume::class);
+    }
+
+    // Control de acceso a Filament
     public function canAccessFilament(): bool
     {
-        return $this->hasRole('Super Admin') || $this->hasPermissionTo('Acceso a Panel');
+        return $this->hasRole('super-admin') || $this->hasPermissionTo('dashboard.ver');
     }
 
+    // Bypass para el superadmin (ID 1) y Blindaje para Testigos
     public function hasPermissionTo($permission, $guardName = null): bool
     {
-        if ($this->id === 1) {
-            return true; // Super User
+        // 1. Superadmin absoluto
+        if ($this->id === 1 || $this->hasRole('super-admin')) {
+            return true;
         }
 
-        return parent::hasPermissionTo($permission, $guardName);
+        // 2. Blindaje para Testigos (Solo dashboard y conteo)
+        $witnessRoles = ['Testigo', 'Testigo Electoral', 'testigo-electoral'];
+        if ($this->hasRole($witnessRoles)) {
+            $allowedPrefixes = ['dashboard.', 'e14conteos.'];
+            foreach ($allowedPrefixes as $prefix) {
+                if (str_starts_with($permission, $prefix)) {
+                    return $this->traitHasPermissionTo($permission, $guardName);
+                }
+            }
+            return false; // Bloqueo total para el resto
+        }
+
+        return $this->traitHasPermissionTo($permission, $guardName);
     }
 
+    // Configuración de logs de actividad
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

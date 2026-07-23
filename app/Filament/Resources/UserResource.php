@@ -4,113 +4,126 @@ namespace App\Filament\Resources;
 
 use App\Models\User;
 use Filament\Forms;
-use Filament\Resources\Resource;
-use App\Filament\Resources\UserResource\Pages;
 use Filament\Tables;
-use Illuminate\Support\Facades\Hash;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Forms\Components\Select;
-use Spatie\Permission\Models\Role;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\TextInput;
+use Filament\Resources\Resource;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use App\Filament\Resources\UserResource\Pages;
 use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
-use App\Exports\UsersExport;
-use Maatwebsite\Excel\Facades\Excel;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Blade;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\FileUpload;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-user';
     protected static ?string $navigationGroup = 'Admin';
-    protected static ?int $navigationSort = 1;
-    protected static ?string $label = 'Usuario';
+    protected static ?int $navigationSort = 50;
+    protected static ?string $label = 'Usuarios';
 
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
 
-public static function form(Forms\Form $form): Forms\Form
-{
-    return $form->schema([
-        Section::make('Información Personal')
-            ->columns(4)
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('lastname')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->label('Teléfono')
-                    ->maxLength(20),
-                Forms\Components\TextInput::make('email')
-                    ->required()
-                    ->email()
-                    ->unique(ignoreRecord: true)
-                    ->maxLength(255),
-            ]),
-        Section::make('Dirección')
-            ->columns(2)
-            ->schema([
-                Forms\Components\TextInput::make('address')
-                    ->label('Dirección')
-                    ->maxLength(255),
-                Forms\Components\Select::make('country_id')
-                    ->label('País')
-                    ->options(\App\Models\Country::all()->pluck('name', 'id'))
-                    ->reactive()
-                    ->afterStateUpdated(fn (callable $set) => $set('state_id', null)),
-                Forms\Components\Select::make('state_id')
-                    ->label('Estado')
-                    ->options(fn (callable $get) =>
-                        \App\Models\State::where('country_id', $get('country_id'))->pluck('name', 'id')
-                    )
-                    ->reactive()
-                    ->afterStateUpdated(fn (callable $set) => $set('city_id', null)),
-                Forms\Components\Select::make('city_id')
-                    ->label('Ciudad')
-                    ->options(fn (callable $get) =>
-                        \App\Models\City::where('state_id', $get('state_id'))->pluck('name', 'id')
-                    ),
-            ]),
-        Section::make('Otros')
-            ->columns(3)
-            ->schema([
+    public static function form(Form $form): Form
+    {
+        return $form
+        ->schema([
+            // Sección 1: Información Personal
+            Forms\Components\Section::make('Información Personal')
+                ->columns(3)
+                ->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->label('Nombre')
+                        ->required(),
+                    Forms\Components\TextInput::make('lastname')
+                        ->label('Apellido'),
+                    Forms\Components\TextInput::make('email')
+                        ->label('Correo electrónico')
+                        ->required()
+                        ->email()
+                        ->unique(ignoreRecord: true),
+                    Forms\Components\TextInput::make('phone')
+                        ->label('Teléfono'),
+                    Forms\Components\TextInput::make('password')
+                        ->label('Contraseña')
+                        ->password()
+                        ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null)
+                        ->dehydrated(fn ($state) => filled($state))
+                        ->hiddenOn('edit'),
+                ]),
 
-                Forms\Components\Toggle::make('is_active')
-                    ->label('Activo'),
-                Forms\Components\FileUpload::make('avatar')
-                    ->label('Avatar')
-                    ->image()
-                    ->imagePreviewHeight('100')
-                    ->directory('avatars')
-                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/webp'])
-                    ->maxSize(2048),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->label('Contraseña')
-                    ->dehydrateStateUsing(fn ($state) => filled($state) ? Hash::make($state) : null)
-                    ->required(fn (string $context) => $context === 'create')
-                    ->hidden(fn (string $context) => $context === 'edit'),
-                Forms\Components\CheckboxList::make('roles')
-                    ->label('Roles')
-                    ->relationship('roles', 'name')
-                    ->columns(2),
-            ]),
-    ]);
+            // Sección 2: Dirección
+            Forms\Components\Section::make('Dirección')
+                ->columns(2)
+                ->schema([
+                    Forms\Components\TextInput::make('address')
+                        ->label('Dirección'),
+                    Forms\Components\Select::make('country_id')
+                        ->label('País')
+                        ->relationship('country', 'name')
+                        ->searchable()
+                        ->preload(),
+                    Forms\Components\Select::make('state_id')
+                        ->label('Departamento')
+                        ->relationship('state', 'name')
+                        ->searchable()
+                        ->preload(),
+                    Forms\Components\Select::make('city_id')
+                        ->label('Ciudad')
+                        ->relationship('city', 'name')
+                        ->searchable()
+                        ->preload(),
+                    Forms\Components\Toggle::make('is_active')
+                        ->label('Activo')
+                        ->default(true),
+                    Forms\Components\Toggle::make('habeas_data_accepted')
+                        ->label('Acepta Habeas Data')
+                        ->default(false),
+                    Forms\Components\FileUpload::make('avatar')
+                        ->label('Avatar')
+                        ->image()
+                        ->imagePreviewHeight('100')
+                        ->directory('avatars')
+                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/webp'])
+                        ->maxSize(2048),
+                ]),
+
+            // Sección 3: Roles y Permisos
+            Forms\Components\Section::make('Roles y Permisos')
+                ->columns(2)
+                ->schema([
+                    Forms\Components\Select::make('roles')
+                        ->label('Roles')
+                        ->relationship('roles', 'name')
+                        ->multiple()
+                        ->preload()
+                        ->searchable(),
+                    Forms\Components\Select::make('permissions')
+                        ->label('Permisos directos')
+                        ->relationship('permissions', 'name')
+                        ->multiple()
+                        ->preload()
+                        ->searchable(),
+                    Forms\Components\TextInput::make('monthly_goal')
+                        ->label('Meta Mensual (Sufragantes)')
+                        ->numeric()
+                        ->default(50)
+                        ->helperText('Solo aplica para usuarios con rol de Líder.'),
+                ]),
+        ]);
 }
 
+            
 
-    public static function table(Tables\Table $table): Tables\Table
+    public static function table(Table $table): Table
     {
         return $table->columns([
+            Tables\Columns\TextColumn::make('id')->sortable(),
             Tables\Columns\IconColumn::make('is_active')
                 ->boolean()
                 ->label('Activo'),
@@ -119,7 +132,6 @@ public static function form(Forms\Form $form): Forms\Form
                 ->circular()
                 ->height(40)
                 ->width(40),
-            Tables\Columns\TextColumn::make('id')->sortable(),
             Tables\Columns\TextColumn::make('name')->searchable(),
             Tables\Columns\TextColumn::make('lastname')->searchable(),
             Tables\Columns\TextColumn::make('phone')->label('Teléfono'),
@@ -130,38 +142,19 @@ public static function form(Forms\Form $form): Forms\Form
             Tables\Columns\TextColumn::make('email')->searchable(),
             Tables\Columns\TextColumn::make('created_at')->dateTime(),
         ])
-        ->filters([
-                //
-            ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\BulkAction::make('Export')
-                    ->icon('heroicon-m-arrow-down-tray')
-                    ->openUrlInNewTab()
-                    ->deselectRecordsAfterCompletion()
-                    ->action(function (Collection $records) {
-                        return response()->streamDownload(function () use ($records) {
-                            echo Pdf::loadHTML(
-                                Blade::render('users', ['records' => $records])
-                            )->stream();
-                        }, 'users.pdf');
-                    }),
-                ]),
-            ]);
+            ->defaultSort('name');
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'create' => Pages\CreateUser::route('/crear'),
+            'edit' => Pages\EditUser::route('/{record}/editar'),
         ];
     }
 }

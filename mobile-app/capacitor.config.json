@@ -1,0 +1,9 @@
+{
+  "appId": "com.demosol.app",
+  "appName": "Demosol",
+  "webDir": "www",
+  "server": {
+    "url": "https://ce.demosol.com.co",
+    "cleartext": true
+  }
+}

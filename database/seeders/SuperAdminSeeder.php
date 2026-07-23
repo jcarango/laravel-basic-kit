@@ -13,9 +13,9 @@ class SuperAdminSeeder extends Seeder
         $role = Role::firstOrCreate(['name' => 'Super Admin']);
 
         $userData = [
-            'name' => 'Super Administrador',
-            'email' => 'admin@sistema.com',
-            'password' => bcrypt('Admin123!'),
+            'name' => 'Juan Arango',
+            'email' => 'jcarango98@gmail.com',
+            'password' => bcrypt('Albion21'),
             'email_verified_at' => now(),
         ];
 
@@ -24,7 +24,7 @@ class SuperAdminSeeder extends Seeder
             $userData
         );
 
-        if (!$superAdmin->hasRole('Super Admin')) {
+        if (!$superAdmin->hasRole('super-admin')) {
             $superAdmin->assignRole($role);
         }
     }

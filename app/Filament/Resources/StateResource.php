@@ -18,7 +18,7 @@ class StateResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-map';
     protected static ?string $navigationGroup = 'Admin';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 61;
     protected static ?string $label = 'Departamento';
 
     public static function getNavigationBadge(): ?string

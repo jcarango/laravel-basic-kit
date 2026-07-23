@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ColombiaLocationSeeder::class,
             SuperAdminSeeder::class,
+            UserRolePermissionSeeder::class,
         ]);
     }
 }
