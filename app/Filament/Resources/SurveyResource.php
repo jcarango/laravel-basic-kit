@@ -154,8 +154,10 @@ class SurveyResource extends Resource
     {
         return [
             RelationManagers\QuestionsRelationManager::class,
+            RelationManagers\ResponsesRelationManager::class,
         ];
     }
+
 
     public static function getPages(): array
     {

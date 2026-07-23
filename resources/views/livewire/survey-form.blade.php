@@ -17,17 +17,51 @@
                     <p class="text-slate-500 mt-2">Tus respuestas han sido registradas exitosamente en el sistema DEMOSOL.</p>
                 </div>
             @else
-                <form wire:submit.prevent="submit" class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tu Nombre Completo (Opcional)</label>
-                            <input type="text" wire:model="respondent_name" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                <form wire:submit.prevent="submit" class="space-y-6" x-data="{
+                    init() {
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition((pos) => {
+                                $wire.set('latitude', pos.coords.latitude);
+                                $wire.set('longitude', pos.coords.longitude);
+                            }, (err) => {
+                                console.log('GPS Error:', err);
+                            });
+                        }
+                    }
+                }">
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                            <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide">1. Datos Personales del Encuestado</h3>
+                            <template x-if="$wire.latitude">
+                                <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                                    📍 GPS Capturado
+                                </span>
+                            </template>
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cédula / Documento (Opcional)</label>
-                            <input type="text" wire:model="document_number" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" placeholder="Para vincular con tu registro">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nombre Completo *</label>
+                                <input type="text" wire:model="respondent_name" required class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" placeholder="Ej: Maria Perez">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cédula / Documento *</label>
+                                <input type="text" wire:model="document_number" required class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" placeholder="Número de documento">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Teléfono / Celular</label>
+                                <input type="tel" wire:model="phone" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" placeholder="Número de celular">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Correo Electrónico</label>
+                                <input type="email" wire:model="email" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" placeholder="correo@ejemplo.com">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Dirección de Residencia</label>
+                                <input type="text" wire:model="address" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" placeholder="Dirección completa">
+                            </div>
                         </div>
                     </div>
+
 
                     @foreach($survey->questions as $index => $q)
                         <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">

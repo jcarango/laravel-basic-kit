@@ -13,12 +13,19 @@ class SurveyForm extends Component
     public Survey $survey;
     public ?string $respondent_name = '';
     public ?string $document_number = '';
+    public ?string $phone = '';
+    public ?string $email = '';
+    public ?string $address = '';
+    public ?int $city_id = null;
+    public ?string $latitude = '';
+    public ?string $longitude = '';
     public array $answers = [];
     public bool $submitted = false;
 
     public function mount(Survey $survey)
     {
         $this->survey = $survey->load('questions');
+        $this->city_id = $survey->city_id;
 
         foreach ($this->survey->questions as $q) {
             $this->answers[$q->id] = ($q->type === 'multiple_choice') ? [] : '';
@@ -50,8 +57,16 @@ class SurveyForm extends Component
             'survey_id' => $this->survey->id,
             'suffragan_id' => $suffraganId,
             'respondent_name' => $this->respondent_name,
+            'document_number' => $this->document_number,
+            'phone' => $this->phone,
+            'email' => $this->email,
+            'address' => $this->address,
+            'city_id' => $this->city_id,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
             'submitted_at' => now(),
         ]);
+
 
         foreach ($this->answers as $questionId => $val) {
             $finalVal = is_array($val) ? implode(', ', $val) : (string) $val;

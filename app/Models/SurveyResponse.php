@@ -15,17 +15,32 @@ class SurveyResponse extends Model
         'survey_id',
         'suffragan_id',
         'respondent_name',
+        'document_number',
+        'phone',
+        'email',
+        'address',
+        'city_id',
+        'latitude',
+        'longitude',
+        'converted_to_suffragan',
         'submitted_at',
     ];
 
     protected $casts = [
         'submitted_at' => 'datetime',
+        'converted_to_suffragan' => 'boolean',
     ];
 
     public function survey(): BelongsTo
     {
         return $this->belongsTo(Survey::class);
     }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
+
 
     public function suffragan(): BelongsTo
     {
