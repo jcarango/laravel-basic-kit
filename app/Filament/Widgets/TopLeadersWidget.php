@@ -8,9 +8,11 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class TopLeadersWidget extends BaseWidget
 {
-    protected static ?string $heading = 'Top Líderes (Gamificación)';
+    protected static ?string $heading = '🏆 Top Líderes (Gamificación)';
+    protected static ?int $sort = 2;
 
-    protected int | string | array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 1;
+
 
     public static function canView(): bool
     {

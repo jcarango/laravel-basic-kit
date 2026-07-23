@@ -9,6 +9,8 @@ class VotersByCandidateChartWidget extends ChartWidget
 {
     protected static ?string $heading = 'Participación por Candidato';
     protected static ?int $sort = 3;
+    protected int | string | array $columnSpan = 1;
+
 
     protected function getData(): array
     {

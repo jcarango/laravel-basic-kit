@@ -52,12 +52,13 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 \App\Filament\Widgets\ExecutiveStatsWidget::class,
-                \App\Filament\Widgets\VotersByMunicipalityChartWidget::class,
-                \App\Filament\Widgets\VotersByCandidateChartWidget::class,
+                \App\Filament\Widgets\UpcomingEventsWidget::class,
                 \App\Filament\Widgets\TopLeadersWidget::class,
-                \App\Filament\Widgets\LeaderStatsWidget::class,
+                \App\Filament\Widgets\VotersByCandidateChartWidget::class,
+                \App\Filament\Widgets\VotersByMunicipalityChartWidget::class,
                 \App\Filament\Widgets\HeatmapWidget::class,
             ])
+
 
             ->middleware([
                 EncryptCookies::class,

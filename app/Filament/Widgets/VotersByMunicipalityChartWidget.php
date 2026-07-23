@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\DB;
 class VotersByMunicipalityChartWidget extends ChartWidget
 {
     protected static ?string $heading = 'Participación por Municipios';
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 3;
+    protected int | string | array $columnSpan = 1;
+
 
     protected function getData(): array
     {

@@ -17,8 +17,13 @@ use App\Filament\Widgets\StageAlertsChart;
 
 class CalendarWidget extends FullCalendarWidget
 {
+    public static function canView(): bool
+    {
+        return false;
+    }
 
     public function dashboard(): array
+
     {
         return [
             StageAlertsChart::class,
