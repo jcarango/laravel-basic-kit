@@ -128,10 +128,13 @@ class CandidateResource extends Resource
                                     ->hiddenLabel()
                                     ->required(),
                                 Forms\Components\FileUpload::make('photo')
-                                    ->preserveFilenames()
+                                    ->label('Fotografía')
+                                    ->image()
                                     ->disk('public')
-                                    ->hiddenLabel()
-                                    ->directory('profile'),
+                                    ->directory('profile')
+                                    ->visibility('public')
+                                    ->preserveFilenames(),
+
                                 Forms\Components\Select::make('campains')
                                     ->relationship('campains', 'name')
                                     ->preload()
